@@ -1,18 +1,8 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mr-md">
-      <q-select
-      filled
-      v-model="model"
-      label="Simple select"
-      :options="computed_items"
-      style="width: 250px"
-      behavior="menu"
-      />
-    </div>
     <q-table
       title="Doctors"
-      :data="data"
+      :data="dataFilter"
       :columns="columns"
       row-key="name"
       selection="multiple"
@@ -23,6 +13,31 @@
       hide-header
     >
       <template v-slot:top-right>
+          <div class="q-mr-md">
+            <q-select
+              filled
+              emit-value
+              map-options
+              transition-show="flip-up"
+              transition-hide="flip-down"
+              v-model="model"
+              label="Simple select"
+              :options="options"
+              @input="searchQSelect(model)"
+              style="width: 230px"
+              behavior="menu"
+            >
+              <template v-slot:append>
+                <q-icon
+                  v-if="model !== null"
+                  class="cursor-pointer"
+                  name="clear"
+                  @click.stop="model = null"
+                  @click="loadDataTable()"
+                />
+              </template>
+            </q-select>
+          </div>
         <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
             <q-icon name="search" />
@@ -75,6 +90,7 @@ export default {
     return {
       model: null,
       filter: '',
+      dataFilter: [],
       selected: [],
       options: stringOptions,
       pagination: {
@@ -145,23 +161,25 @@ export default {
         {
           name: 'Maggie Willians',
           upin: 655942,
-          zipcode: 92037,
+          zipcode: 92015,
           city: 'San Diego',
           available: true
         }
       ]
     }
   },
-  created: {
+  mounted () {
+    this.loadDataTable()
   },
   computed: {
-    computed_items () {
-      let list = []
-      list = this.data.filter(v => v.avilable === true)
-      return list
-    }
   },
   methods: {
+    loadDataTable () {
+      this.dataFilter = this.data
+    },
+    searchQSelect (model) {
+      this.dataFilter = this.data.filter(e => e.available === model)
+    }
   }
 }
 </script>
