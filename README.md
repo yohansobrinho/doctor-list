@@ -40,6 +40,13 @@ $ npm install -g @quasar/cli
 ```bash
 quasar dev
 ```
+### Search data as Upin, zip code, city, name
+
+Multi field search and combination filters.
+Check available with the select component
+
+![Filter easy](example2.png)
+
 
 
 ### Customize the configuration
